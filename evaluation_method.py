@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from davis2017.evaluation import DAVISEvaluation
 
-default_davis_path = '/path/to/the/folder/DAVIS'
+default_davis_path = '/home/chiaohoo/databases/DAVIS'
 
 time_start = time()
 parser = argparse.ArgumentParser()
@@ -20,6 +20,8 @@ parser.add_argument('--task', type=str, help='Task to evaluate the results', def
                     choices=['semi-supervised', 'unsupervised'])
 parser.add_argument('--results_path', type=str, help='Path to the folder containing the sequences folders',
                     required=True)
+parser.add_argument("--year", type=str, help="Davis dataset year (default: 2017)", default='2017',
+                    choices=['2016', '2017', '2019'])            
 args, _ = parser.parse_known_args()
 csv_name_global = f'global_results-{args.set}.csv'
 csv_name_per_sequence = f'per-sequence_results-{args.set}.csv'
@@ -34,7 +36,7 @@ if os.path.exists(csv_name_global_path) and os.path.exists(csv_name_per_sequence
 else:
     print(f'Evaluating sequences for the {args.task} task...')
     # Create dataset and evaluate
-    dataset_eval = DAVISEvaluation(davis_root=args.davis_path, task=args.task, gt_set=args.set)
+    dataset_eval = DAVISEvaluation(davis_root=args.davis_path, task=args.task, gt_set=args.set, year=args.year)
     metrics_res = dataset_eval.evaluate(args.results_path)
     J, F = metrics_res['J'], metrics_res['F']
 
